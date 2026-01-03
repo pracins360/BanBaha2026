@@ -812,27 +812,47 @@
   }
 
   // ----------------- Activation API -----------------
-  async function apiPost(payload) {
-    if (!CONFIG.API_URL || CONFIG.API_URL.includes("PASTE_")) {
-      throw new Error("Missing API_URL in CONFIG. Paste your Apps Script Web App URL.");
-    }
-    const res = await fetch(CONFIG.API_URL, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(payload),
+ function jsonpRequest(params){
+  return new Promise((resolve, reject) => {
+    const cbName = "cb_" + Math.random().toString(36).slice(2);
+    const url = new URL(CONFIG.API_URL);
+
+    Object.entries(params).forEach(([k,v]) => {
+      url.searchParams.set(k, v);
     });
-    return res.json();
-  }
 
-  async function activateLicense(licenseKey) {
-    const deviceId = getDeviceId();
-    return apiPost({ action: "activate", license_key: licenseKey, device_id: deviceId });
-  }
+    url.searchParams.set("callback", cbName);
 
-  async function checkLicense(licenseKey) {
-    const deviceId = getDeviceId();
-    return apiPost({ action: "check", license_key: licenseKey, device_id: deviceId });
-  }
+    window[cbName] = (data) => {
+      try { resolve(data); }
+      finally {
+        delete window[cbName];
+        script.remove();
+      }
+    };
+
+    const script = document.createElement("script");
+    script.src = url.toString();
+    script.onerror = () => {
+      delete window[cbName];
+      script.remove();
+      reject(new Error("JSONP failed"));
+    };
+
+    document.head.appendChild(script);
+  });
+}
+
+
+  async function activateLicense(licenseKey){
+  const deviceId = getDeviceId();
+  return jsonpRequest({
+    action: "activate",
+    license_key: licenseKey,
+    device_id: deviceId
+  });
+}
+
 
   function isActivated() {
     return localStorage.getItem(K.activated) === "true" && !!localStorage.getItem(K.licenseKey);
