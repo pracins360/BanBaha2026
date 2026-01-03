@@ -1,0 +1,1215 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>BanBaha2026</title>
+  <meta name="theme-color" content="#0b1220" />
+  <style>
+    :root{
+      --bg:#0b1220; --text:#eaf0ff; --muted:#9fb0d0; --line:rgba(255,255,255,.10);
+      --card: rgba(255,255,255,.06); --card2: rgba(255,255,255,.04);
+      --radius: 18px; --shadow: 0 18px 45px rgba(0,0,0,.35);
+      --ok: rgba(53,208,127,.18); --warn: rgba(255,215,125,.16); --bad: rgba(255,107,107,.14);
+    }
+    *{box-sizing:border-box}
+    body{
+      margin:0; font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+      background:
+        radial-gradient(1200px 700px at 20% 0%, rgba(53,208,127,.18), transparent 60%),
+        radial-gradient(900px 600px at 80% 10%, rgba(88,149,255,.18), transparent 55%),
+        var(--bg);
+      color:var(--text); min-height:100vh;
+    }
+    header{max-width:980px; margin:0 auto; padding: 18px 14px 10px;}
+    h1{margin:0; font-size:18px; letter-spacing:.2px}
+    .sub{margin-top:6px; color:var(--muted); font-size:13px; line-height:1.35}
+    .wrap{max-width:980px; margin:0 auto; padding: 10px 14px 28px;}
+    .toprow{display:flex; gap:10px; flex-wrap:wrap; align-items:center; justify-content:space-between; margin-top:12px}
+    .pill{
+      display:inline-flex; gap:8px; align-items:center;
+      padding:8px 12px; border:1px solid var(--line); background: rgba(255,255,255,.06);
+      border-radius:999px; font-size:12px; color:var(--muted);
+    }
+    .btn{
+      border:1px solid rgba(255,255,255,.14);
+      background: rgba(255,255,255,.06);
+      color: var(--text);
+      padding:10px 12px;
+      border-radius: 14px;
+      cursor:pointer;
+      font-size:13px;
+    }
+    .btn.ok{border-color: rgba(53,208,127,.35); background: var(--ok);}
+    .btn.warn{border-color: rgba(255,215,125,.35); background: var(--warn);}
+    .btn.bad{border-color: rgba(255,107,107,.35); background: var(--bad);}
+    .btn:disabled{opacity:.5; cursor:not-allowed}
+
+    .tabs{display:flex; gap:10px; flex-wrap:wrap; margin: 12px 0;}
+    .tabbtn{
+      border:1px solid rgba(255,255,255,.14); background: rgba(255,255,255,.06);
+      color: var(--text); padding: 10px 12px; border-radius: 14px; cursor:pointer; font-size:13px;
+    }
+    .tabbtn.active{ border-color: rgba(53,208,127,.35); background: rgba(53,208,127,.14); }
+
+    .controls{display:flex; gap:10px; flex-wrap:wrap; align-items:center; margin-bottom: 12px;}
+    select, input{
+      width: 100%; max-width: 280px;
+      border:1px solid rgba(255,255,255,.14);
+      background: rgba(10,18,36,.75);
+      color: var(--text);
+      padding:10px 12px;
+      border-radius: 14px;
+      outline:none;
+      font-size:14px;
+    }
+    textarea{
+      width:100%;
+      border:1px solid rgba(255,255,255,.14);
+      background: rgba(10,18,36,.75);
+      color: var(--text);
+      padding:10px 12px;
+      border-radius: 14px;
+      outline:none;
+      font-size:14px;
+      min-height: 80px;
+      resize: vertical;
+    }
+    label{display:block; color:var(--muted); font-size:12px; margin: 0 0 6px;}
+    .card{
+      border:1px solid var(--line);
+      background: linear-gradient(180deg, var(--card), var(--card2));
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      padding: 14px;
+      margin-bottom: 12px;
+    }
+    .card h2{margin:0 0 8px; font-size:14px; letter-spacing:.2px}
+    .muted{color:var(--muted); font-size:12px; line-height:1.45}
+    .tagrow{display:flex; gap:8px; flex-wrap:wrap; margin-top:10px}
+    .tag{
+      display:inline-flex; align-items:center;
+      padding:6px 10px;
+      border:1px solid rgba(255,255,255,.14);
+      background: rgba(255,255,255,.05);
+      border-radius:999px;
+      font-size:12px;
+      color: var(--text);
+      white-space:nowrap;
+    }
+    .row{display:flex; gap:12px; flex-wrap:wrap;}
+    .row > div{flex:1 1 260px;}
+    .hr{height:1px; background: var(--line); margin: 12px 0;}
+    .panel{display:none;}
+    .panel.show{display:block;}
+    .msg{
+      margin-top:10px; padding:10px 12px; border-radius: 14px; border:1px solid var(--line);
+      background: rgba(255,255,255,.05); color: var(--muted); font-size:12px; display:none;
+    }
+    .msg.show{display:block}
+    .msg.ok{border-color: rgba(53,208,127,.35); background: rgba(53,208,127,.10); color:#c8ffe1;}
+    .msg.bad{border-color: rgba(255,107,107,.35); background: rgba(255,107,107,.10); color:#ffd1d1;}
+    .msg.warn{border-color: rgba(255,215,125,.35); background: rgba(255,215,125,.10); color:#ffe6b5;}
+    .steps{margin: 8px 0 0; padding-left: 18px; color: var(--text); font-size: 13px; line-height: 1.45;}
+    .mini{font-size:11px; color:rgba(159,176,208,.9); line-height:1.35}
+    .timerBox{
+      display:flex; gap:10px; flex-wrap:wrap; align-items:center; justify-content:space-between;
+      border:1px solid rgba(255,255,255,.12); border-radius: 16px; padding: 12px;
+      background: rgba(10,18,36,.55);
+      margin-top: 10px;
+    }
+    .bigTime{font-weight:800; font-size:22px; letter-spacing:.5px;}
+    .kbd{font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace; font-size:12px;}
+  </style>
+</head>
+<body>
+<header>
+  <h1 id="appTitle">BanBaha2026</h1>
+  <div class="sub" id="appSubtitle">Pocket coach: 4–7 min Tai Chi Dance/Walk + 7-day low-carb Caribbean meals (Pap/EN).</div>
+
+  <div class="toprow">
+    <div class="pill" id="statusPill">Status: —</div>
+    <div class="pill" id="tempoPill">Tempo: 66–72 BPM (Flow)</div>
+  </div>
+
+  <div class="tabs" id="tabs" style="display:none;">
+    <button class="tabbtn active" id="tabMove" type="button">Move</button>
+    <button class="tabbtn" id="tabEat" type="button">Eat</button>
+    <button class="tabbtn" id="tabAbout" type="button">Info</button>
+  </div>
+</header>
+
+<main class="wrap">
+
+  <!-- ACTIVATION PANEL -->
+  <section class="card panel show" id="panelActivate">
+    <h2 id="actTitle">Activate BanBaha2026</h2>
+    <div class="muted" id="actText">
+      Activation is required (one-time online). After activation, the content can be used offline.
+    </div>
+
+    <div class="hr"></div>
+
+    <div class="row">
+      <div>
+        <label for="licenseInput" id="licenseLbl">License key</label>
+        <input id="licenseInput" placeholder="XXXX-XXXX-XXXX" />
+        <div class="mini" style="margin-top:8px;">
+          Your license binds to <b>one device</b>. Sharing the key will not activate on a second phone.
+        </div>
+      </div>
+      <div>
+        <label id="deviceLbl">Device ID</label>
+        <div class="card" style="margin:0; padding:12px; background: rgba(10,18,36,.55);">
+          <div class="kbd" id="deviceIdBox">—</div>
+          <div style="margin-top:10px; display:flex; gap:10px; flex-wrap:wrap;">
+            <button class="btn" id="copyDeviceBtn" type="button">Copy</button>
+            <button class="btn warn" id="resetDeviceBtn" type="button">Reset ID</button>
+          </div>
+          <div class="mini" style="margin-top:8px;">
+            Reset only if you intentionally want to re-bind (requires new license/admin reset).
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div style="margin-top:12px; display:flex; gap:10px; flex-wrap:wrap;">
+      <button class="btn ok" id="activateBtn" type="button">Activate</button>
+      <button class="btn" id="retryBtn" type="button">Check status</button>
+    </div>
+
+    <div class="msg" id="actMsg"></div>
+  </section>
+
+  <!-- MOVE PANEL -->
+  <section class="card panel" id="panelMove">
+    <h2 id="moveTitle">Daily Move (4–7 min)</h2>
+    <div class="muted" id="moveSubtitle">
+      Default tempo: <b>66–72 BPM</b>. Play your own Caribbean track and move slowly, grounded, controlled.
+    </div>
+
+    <div class="controls" style="margin-top:12px;">
+      <select id="langSel"></select>
+      <select id="daySelMove"></select>
+      <select id="tempoSel">
+        <option value="flow" selected>Flow (66–72 BPM)</option>
+        <option value="energy">Light Energy (80 BPM bursts)</option>
+      </select>
+    </div>
+
+    <div class="card" style="margin:0; padding:12px; background: rgba(10,18,36,.55);">
+      <div class="muted" id="routineMeta">—</div>
+      <div style="margin-top:8px; font-weight:800; letter-spacing:.2px;" id="routineTitle">—</div>
+      <ol class="steps" id="routineSteps"></ol>
+
+      <div class="timerBox">
+        <div>
+          <div class="muted" id="timerLbl">Timer</div>
+          <div class="bigTime" id="timerText">05:00</div>
+          <div class="mini" id="timerHint">Tip: inhale 4 beats, exhale 4 beats. 2 beats = one weight shift.</div>
+        </div>
+        <div style="display:flex; gap:10px; flex-wrap:wrap;">
+          <button class="btn ok" id="startBtn" type="button">Start</button>
+          <button class="btn" id="pauseBtn" type="button" disabled>Pause</button>
+          <button class="btn bad" id="resetBtn" type="button">Reset</button>
+        </div>
+      </div>
+
+      <div style="margin-top:10px; display:flex; gap:10px; flex-wrap:wrap;">
+        <button class="btn" id="shareTodayBtn" type="button">Share today (WhatsApp)</button>
+      </div>
+
+      <div class="msg" id="moveMsg"></div>
+    </div>
+  </section>
+
+  <!-- EAT PANEL -->
+  <section class="card panel" id="panelEat">
+    <h2 id="eatTitle">Eat (7-day plan)</h2>
+    <div class="muted" id="eatSubtitle">
+      Low-carb, gentle, local herbs. 3 meals/day. Drink water first.
+    </div>
+
+    <div class="controls" style="margin-top:12px;">
+      <select id="daySelEat"></select>
+      <select id="mealSel">
+        <option value="breakfast">Breakfast</option>
+        <option value="lunch">Lunch</option>
+        <option value="dinner">Dinner</option>
+      </select>
+    </div>
+
+    <div class="card" style="margin:0; padding:12px; background: rgba(10,18,36,.55);">
+      <div class="muted" id="mealMeta">—</div>
+      <div style="margin-top:8px; font-weight:800; letter-spacing:.2px;" id="mealTitle">—</div>
+      <div class="tagrow" id="mealTags"></div>
+      <div class="hr"></div>
+      <div class="muted" id="mealIngredientsLbl"><b>Ingredients</b></div>
+      <ul class="steps" id="mealIngredients" style="list-style: disc;"></ul>
+      <div class="muted" id="mealStepsLbl" style="margin-top:10px;"><b>Steps</b></div>
+      <ol class="steps" id="mealSteps"></ol>
+
+      <div class="hr"></div>
+      <div class="mini" id="herbNote">
+        Herbs note: If you are pregnant, have kidney/liver disease, diabetes medication, or blood thinners, keep herbal intake conservative and consult a professional. Aloe ingestion is optional and may interact with medications.
+      </div>
+
+      <div style="margin-top:10px; display:flex; gap:10px; flex-wrap:wrap;">
+        <button class="btn" id="shareMealBtn" type="button">Share this meal (WhatsApp)</button>
+      </div>
+
+      <div class="msg" id="eatMsg"></div>
+    </div>
+  </section>
+
+  <!-- INFO PANEL -->
+  <section class="card panel" id="panelAbout">
+    <h2 id="aboutTitle">Info & Use</h2>
+    <div class="muted" id="aboutText">
+      BanBaha2026 is a lightweight pocket coach. It does not collect personal data. Content is stored in the app.
+      Activation binds a license key to one device.
+    </div>
+
+    <div class="hr"></div>
+
+    <div class="card" style="margin:0; padding:12px; background: rgba(10,18,36,.55);">
+      <div class="muted"><b>Recommended music tempo</b></div>
+      <div style="margin-top:6px; font-size:13px; line-height:1.45;">
+        • Default: <b>66–72 BPM</b> (Flow)<br>
+        • Optional bursts: <b>80 BPM</b> (Light Energy) for 30–90 seconds<br>
+        • Breathe: inhale 4 beats, exhale 4 beats
+      </div>
+      <div class="hr"></div>
+      <div class="muted"><b>Support</b></div>
+      <div class="mini">If you need help, add a WhatsApp support number in CONFIG and the share buttons will use it.</div>
+    </div>
+  </section>
+
+</main>
+
+<script>
+(() => {
+  // ============================================================
+  // CONFIG — BanBaha2026
+  // ============================================================
+  const CONFIG = {
+    appName: "BanBaha2026",
+    subtitle: "Pocket coach: 4–7 min Tai Chi Dance/Walk + 7-day low-carb Caribbean meals (Pap/EN).",
+    // 1) Paste your Google Apps Script Web App URL here:
+    API_URL: https://script.google.com/macros/s/AKfycbxC_1c9LOH3zA2lKLFsz7bYXmZkt_aixOlracR11ioBCy-kL5Zj2tGos6xbrRgCVC3a/exec,
+    // Optional WhatsApp support (digits only, e.g. 59995120536). Leave empty to use share without number.
+    whatsappSupportNumber: "",
+    languages: [
+      { code: "en", label: "English" },
+      { code: "pap", label: "Papiamentu" },
+    ],
+    defaultLang: "en",
+
+    move: {
+      // Default tempo guidance text
+      tempo: {
+        flow: { labelEN:"Flow (66–72 BPM)", labelPAP:"Flow (66–72 BPM)", noteEN:"Slow, grounded, controlled.", notePAP:"Despacio, firmi, kontrolá." },
+        energy: { labelEN:"Light Energy (80 BPM bursts)", labelPAP:"Energia leu (80 BPM)", noteEN:"Short bursts only (30–90s).", notePAP:"Solo bursts kortiku (30–90s)." }
+      },
+      // Each day has: minutes, title, meta, steps (EN/PAP)
+      days: [
+        {
+          minutes: 5,
+          title: {en:"Day 1 — Ground & Flow", pap:"Dia 1 — Firmi & Fluí"},
+          meta:  {en:"Goal: calm start, posture, breath. Tempo: 66–72 BPM.", pap:"Meta: kuminsamentu trankil, postura, halamentu. Tempo: 66–72 BPM."},
+          steps: {
+            en:[
+              "45s: Stand tall, knees soft. Breathe: inhale 4 beats, exhale 4 beats.",
+              "60s: Weight shifts: left ↔ right. 2 beats per shift. Keep hips low (floor energy).",
+              "2:00: Caribbean Tai Chi Walk: step-touch forward/back (tiny steps), keep shoulders relaxed, hands wave slowly.",
+              "60s: “Wave & reach”: slow arm circles while shifting weight.",
+              "45s: Cooldown: neck/shoulder release, gentle calf stretch."
+            ],
+            pap:[
+              "45s: Para haltu, henu suavi. Hala rose: hala 4 beat, saka rose 4 beat.",
+              "60s: Kambia peso: robes ↔ drechi. 2 beat pa kada kambio. Hunchi suavi (floor energy).",
+              "2:00: Tai Chi Dance/Walk Karibe: step-touch dilanti/patrás (paso chikí), solta skouder, manan ta wèrse despacio.",
+              "60s: “Wave & reach”: sirkel di brasa despacio ku kambio di peso.",
+              "45s: Cooldown: solta barika/skouder, estira kálf suavi."
+            ]
+          }
+        },
+        {
+          minutes: 6,
+          title: {en:"Day 2 — Hips & Balance", pap:"Dia 2 — Hips & Balans"},
+          meta:  {en:"Goal: hip mobility + balance. Tempo: 66–72 BPM.", pap:"Meta: mobilidat di heup + balans. Tempo: 66–72 BPM."},
+          steps: {
+            en:[
+              "45s: Breath + posture check (chin slightly in, shoulders down).",
+              "75s: Slow hip circles (small), keep knees soft.",
+              "2:30: Side-to-side glide: step left, bring right in; step right, bring left in. Hands: slow wave.",
+              "60s: Single-leg balance: 15s each side ×2 (hold chair if needed).",
+              "45s: Cooldown: deep breaths, gentle hamstring stretch."
+            ],
+            pap:[
+              "45s: Hala rose + postura (kabes un tiki paden, skouder abou).",
+              "75s: Sirkel di heup despacio (chikí), henu suavi.",
+              "2:30: Glide lateral: paso robes, trae drechi serka; paso drechi, trae robes serka. Man: wave despacio.",
+              "60s: Balans riba un pia: 15s kada banda ×2 (tene un stul si mester).",
+              "45s: Cooldown: hala rose profundo, estira hamstring suavi."
+            ]
+          }
+        },
+        {
+          minutes: 5,
+          title: {en:"Day 3 — Shoulder Wave", pap:"Dia 3 — Wave di Skouder"},
+          meta:  {en:"Goal: upper-body relaxation + flow. Tempo: 66–72 BPM.", pap:"Meta: relahashon di parti haltu + flow. Tempo: 66–72 BPM."},
+          steps: {
+            en:[
+              "45s: Breath (4 in / 4 out).",
+              "60s: “Cloud hands”: slow side steps while hands float across the body.",
+              "2:00: Forward/back mini-walk: 4 steps forward, 4 steps back (tiny steps). Keep hips low.",
+              "60s: Shoulder roll + arm sweep (slow).",
+              "45s: Cooldown: wrist circles, deep breath."
+            ],
+            pap:[
+              "45s: Hala rose (4 drenta / 4 salida).",
+              "60s: “Cloud hands”: paso lateral suavi ku manan ta flotá dilanti di kurpa.",
+              "2:00: Mini-walk dilanti/patrás: 4 paso dilanti, 4 paso patrás (paso chikí). Hunchi suavi.",
+              "60s: Roll di skouder + sweep di brasa (despacio).",
+              "45s: Cooldown: sirkel di muñeka, hala rose profundo."
+            ]
+          }
+        },
+        {
+          minutes: 7,
+          title: {en:"Day 4 — Light Energy Bursts", pap:"Dia 4 — Energia leu (bursts)"},
+          meta:  {en:"Goal: gentle fat-loss feel. Mostly 66–72 BPM, with 2 short 80 BPM bursts.", pap:"Meta: sensashon di fat-loss suavi. Masmente 66–72 BPM, ku 2 burst kortiku 80 BPM."},
+          steps: {
+            en:[
+              "60s: Warmup flow (slow weight shifts + breath).",
+              "2:00: Tai Chi walk (tiny steps) + soft hip sway.",
+              "45s: Burst @ ~80 BPM: step-touch + light arm pump (stay controlled).",
+              "90s: Return to Flow (slow wave hands + glide).",
+              "45s: Burst @ ~80 BPM: side steps + gentle torso twist.",
+              "60s: Cooldown: breathe + calf stretch."
+            ],
+            pap:[
+              "60s: Warmup flow (kambio di peso despacio + halamentu).",
+              "2:00: Tai Chi walk (paso chikí) + sway di heup suavi.",
+              "45s: Burst @ ~80 BPM: step-touch + pomp di brasa leu (kontrolá).",
+              "90s: Bèk na Flow (wave di man despacio + glide).",
+              "45s: Burst @ ~80 BPM: paso lateral + twist di torso suavi.",
+              "60s: Cooldown: hala rose + estira kálf."
+            ]
+          }
+        },
+        {
+          minutes: 5,
+          title: {en:"Day 5 — Core & Posture", pap:"Dia 5 — Núcleo & Postura"},
+          meta:  {en:"Goal: stable core, tall posture. Tempo: 66–72 BPM.", pap:"Meta: núcleo stabíl, postura haltu. Tempo: 66–72 BPM."},
+          steps: {
+            en:[
+              "45s: Stand tall, lightly tighten lower belly on exhale.",
+              "75s: Slow march in place (tiny steps), arms relaxed.",
+              "2:00: Diagonal walk: 4 steps diagonally left, back; 4 steps diagonally right, back.",
+              "60s: “Bow stance”: step forward, bend front knee slightly, shift back (slow).",
+              "45s: Cooldown: breathe, stretch hips gently."
+            ],
+            pap:[
+              "45s: Para haltu, tensa un tiki barika abou ora bo saka rose.",
+              "75s: Marcha despacio na luga (paso chikí), brasa relax.",
+              "2:00: Walk diagonal: 4 paso diagonal robes, bèk; 4 paso diagonal drechi, bèk.",
+              "60s: “Bow stance”: paso dilanti, dobla henu dilanti un tiki, kambia bèk (despacio).",
+              "45s: Cooldown: hala rose, estira heup suavi."
+            ]
+          }
+        },
+        {
+          minutes: 6,
+          title: {en:"Day 6 — Smooth Cardio", pap:"Dia 6 — Kardio suavi"},
+          meta:  {en:"Goal: steady movement, no rush. Tempo: 66–72 BPM.", pap:"Meta: moveshon steady, sin kore. Tempo: 66–72 BPM."},
+          steps: {
+            en:[
+              "45s: Breath + shoulder drop.",
+              "2:30: Continuous glide: side-to-side for 8 counts each side, repeat. Hands wave.",
+              "60s: Gentle torso twist (keep hips stable).",
+              "60s: Forward/back mini-walk (tiny steps).",
+              "45s: Cooldown: slow arm circles + breathe."
+            ],
+            pap:[
+              "45s: Hala rose + laga skouder baha.",
+              "2:30: Glide kontinu: lateral 8 count kada banda, repití. Manan wave.",
+              "60s: Twist di torso suavi (heup stabíl).",
+              "60s: Mini-walk dilanti/patrás (paso chikí).",
+              "45s: Cooldown: sirkel di brasa despacio + halamentu."
+            ]
+          }
+        },
+        {
+          minutes: 5,
+          title: {en:"Day 7 — Recovery Flow", pap:"Dia 7 — Recovery Flow"},
+          meta:  {en:"Goal: recovery, joints happy. Tempo: 66–72 BPM.", pap:"Meta: recovery, huntu kontentu. Tempo: 66–72 BPM."},
+          steps: {
+            en:[
+              "60s: Breath + gentle neck/shoulder release.",
+              "2:00: Slow Tai Chi walk (tiny steps) with soft knee bends.",
+              "60s: Ankle circles + calf raises (slow).",
+              "60s: Hip opening: small circles + side step.",
+              "30–45s: Quiet standing: 4 in / 4 out breath."
+            ],
+            pap:[
+              "60s: Hala rose + solta nek i skouder suavi.",
+              "2:00: Tai Chi walk despacio (paso chikí) ku dobla henu suavi.",
+              "60s: Sirkel di ankle + levantamentu di kálf (despacio).",
+              "60s: Habri heup: sirkel chikí + paso lateral.",
+              "30–45s: Para ketu: hala 4 / saka 4."
+            ]
+          }
+        }
+      ]
+    },
+
+    eat: {
+      // 7 days x 3 meals
+      days: [
+        {
+          dayName: {en:"Day 1", pap:"Dia 1"},
+          meals: {
+            breakfast: {
+              title:{en:"Herb Omelet + Avocado", pap:"Omelet di yerba + Avocado"},
+              tags:["eggs","moringa","low-carb"],
+              ingredients:{
+                en:["2–3 eggs","Handful spinach or local greens","1 tsp moringa powder OR chopped moringa leaves (optional)","Oregano, salt, pepper","1/2 avocado","Olive oil or butter"],
+                pap:["2–3 wowo","Un man di spinach òf yerba lokal","1 tsp moringa powder ÒF blad’i moringa kortá (opsional)","Oregano, sal, pimentu","1/2 avocado","Azeite òf manteka"]
+              },
+              steps:{
+                en:["Beat eggs with herbs.","Sauté greens 1 min.","Cook omelet. Serve with avocado."],
+                pap:["Bati wowo ku yerba.","Sotea greens 1 min.","Kushina omelet. Sirbi ku avocado."]
+              }
+            },
+            lunch: {
+              title:{en:"Grilled Chicken Salad (Oregano-Lime)", pap:"Salat ku galina grill (Oregano-Limón)"},
+              tags:["chicken","salad","fresh"],
+              ingredients:{
+                en:["Chicken breast/thigh","Cucumber, tomato, lettuce","Lime","Oregano","Olive oil","Salt/pepper"],
+                pap:["Pechuga/pierna di galina","Komkommer, tomaat, lettuce","Limón","Oregano","Azeite","Sal/pimentu"]
+              },
+              steps:{
+                en:["Grill chicken with oregano + lime.","Mix salad.","Slice chicken on top."],
+                pap:["Grill galina ku oregano + limón.","Miks salat.","Korta galina riba dje."]
+              }
+            },
+            dinner: {
+              title:{en:"Fish + Okra Stir (Garlic/Oregano)", pap:"Piska + okra stir (Ajo/Oregano)"},
+              tags:["fish","okra","simple"],
+              ingredients:{
+                en:["Fish fillet","Okra","Garlic","Oregano","Lime","Olive oil"],
+                pap:["Filet di piska","Okra","Ajo","Oregano","Limón","Azeite"]
+              },
+              steps:{
+                en:["Season fish, pan-sear.","Stir okra with garlic.","Finish with lime."],
+                pap:["Sasona piska, sera den pàn.","Stir okra ku ajo.","Finalisa ku limón."]
+              }
+            }
+          }
+        },
+
+        {
+          dayName:{en:"Day 2", pap:"Dia 2"},
+          meals:{
+            breakfast:{
+              title:{en:"Greek Yogurt Bowl (Low-carb)", pap:"Bòl di yogurt (low-carb)"},
+              tags:["yogurt","nuts","easy"],
+              ingredients:{
+                en:["Plain Greek yogurt (unsweetened)","Handful nuts/seeds","Cinnamon","A few berries (optional)"],
+                pap:["Yogurt griego sin sukèr","Un man di nuts/seeds","Kanela","Poko berries (opsional)"]
+              },
+              steps:{
+                en:["Mix yogurt + cinnamon.","Top with nuts (and berries if desired)."],
+                pap:["Miks yogurt + kanela.","Pone nuts riba (i berries si bo ke)."]
+              }
+            },
+            lunch:{
+              title:{en:"Tuna Lettuce Wraps + Cucumber", pap:"Wrap di tuna den lettuce + komkommer"},
+              tags:["fish","quick","no-bread"],
+              ingredients:{
+                en:["Tuna (water/olive oil)","Mayonnaise or olive oil","Oregano/pepper","Lettuce leaves","Cucumber"],
+                pap:["Tuna (awa/azeite)","Mayonesa òf azeite","Oregano/pimentu","Blachi di lettuce","Komkommer"]
+              },
+              steps:{
+                en:["Mix tuna + seasoning.","Wrap in lettuce leaves.","Eat with cucumber."],
+                pap:["Miks tuna + sason.","Wrap den lettuce.","Kome ku komkommer."]
+              }
+            },
+            dinner:{
+              title:{en:"Chicken Veg Soup (Light)", pap:"Sopi di galina ku verdura (leu)"},
+              tags:["comfort","hydration","herbs"],
+              ingredients:{
+                en:["Chicken pieces","Cabbage or spinach","Celery/onion (optional)","Oregano","Salt/pepper"],
+                pap:["Piesanan di galina","Kabes òf spinach","Selderi/shiòun (opsional)","Oregano","Sal/pimentu"]
+              },
+              steps:{
+                en:["Simmer chicken until tender.","Add vegetables + oregano.","Serve warm."],
+                pap:["Laga galina herbi te suavi.","Añadi verdura + oregano.","Sirbi kayente."]
+              }
+            }
+          }
+        },
+
+        {
+          dayName:{en:"Day 3", pap:"Dia 3"},
+          meals:{
+            breakfast:{
+              title:{en:"Eggs + Sautéed Greens", pap:"Wowo + greens soteá"},
+              tags:["eggs","greens","fast"],
+              ingredients:{
+                en:["2 eggs","Greens (spinach/local)","Garlic (optional)","Olive oil","Salt/pepper"],
+                pap:["2 wowo","Greens (spinach/lokal)","Ajo (opsional)","Azeite","Sal/pimentu"]
+              },
+              steps:{
+                en:["Sauté greens 1–2 min.","Cook eggs. Combine."],
+                pap:["Sotea greens 1–2 min.","Kushina wowo. Kombiná."]
+              }
+            },
+            lunch:{
+              title:{en:"Fish Salad Bowl (Avocado)", pap:"Bòl di salat ku piska (Avocado)"},
+              tags:["fish","avocado","fresh"],
+              ingredients:{
+                en:["Cooked fish","Lettuce, tomato, cucumber","1/2 avocado","Lime","Oregano"],
+                pap:["Piska kushiná","Lettuce, tomaat, komkommer","1/2 avocado","Limón","Oregano"]
+              },
+              steps:{
+                en:["Flake fish.","Mix salad + avocado.","Season with lime/oregano."],
+                pap:["Desmenuza piska.","Miks salat + avocado.","Sasona ku limón/oregano."]
+              }
+            },
+            dinner:{
+              title:{en:"Oregano Chicken + Cauliflower Rice", pap:"Galina ku oregano + ‘aròs’ di coliflor"},
+              tags:["chicken","low-carb","filling"],
+              ingredients:{
+                en:["Chicken","Oregano","Garlic","Cauliflower rice","Olive oil","Salt/pepper"],
+                pap:["Galina","Oregano","Ajo","‘Aròs’ di coliflor","Azeite","Sal/pimentu"]
+              },
+              steps:{
+                en:["Cook chicken with oregano/garlic.","Sauté cauliflower rice 3–4 min.","Serve together."],
+                pap:["Kushina galina ku oregano/ajo.","Sotea ‘aròs’ di coliflor 3–4 min.","Sirbi huntu."]
+              }
+            }
+          }
+        },
+
+        {
+          dayName:{en:"Day 4", pap:"Dia 4"},
+          meals:{
+            breakfast:{
+              title:{en:"Herb Scramble + Tomato", pap:"Scramble di yerba + tomaat"},
+              tags:["eggs","oregano","simple"],
+              ingredients:{
+                en:["2–3 eggs","Tomato","Oregano","Olive oil","Salt/pepper"],
+                pap:["2–3 wowo","Tomaat","Oregano","Azeite","Sal/pimentu"]
+              },
+              steps:{
+                en:["Scramble eggs with oregano.","Serve with sliced tomato."],
+                pap:["Hasi scramble ku oregano.","Sirbi ku tomaat kortá."]
+              }
+            },
+            lunch:{
+              title:{en:"Chicken Cabbage Stir", pap:"Stir di galina ku kabes"},
+              tags:["chicken","cabbage","quick"],
+              ingredients:{
+                en:["Chicken strips","Cabbage","Onion (optional)","Oregano","Olive oil"],
+                pap:["Strips di galina","Kabes","Shiòun (opsional)","Oregano","Azeite"]
+              },
+              steps:{
+                en:["Stir-fry chicken.","Add cabbage + oregano.","Cook until tender-crisp."],
+                pap:["Stir galina.","Añadi kabes + oregano.","Kushina te suavi-krisp."]
+              }
+            },
+            dinner:{
+              title:{en:"Fish + Veg Plate", pap:"Piska + plachi di verdura"},
+              tags:["fish","veg","light"],
+              ingredients:{
+                en:["Fish","Zucchini/okra/spinach (choose)","Lime","Oregano","Olive oil"],
+                pap:["Piska","Zucchini/okra/spinach (skohe)","Limón","Oregano","Azeite"]
+              },
+              steps:{
+                en:["Cook fish.","Sauté vegetables.","Finish with lime."],
+                pap:["Kushina piska.","Sotea verdura.","Finalisa ku limón."]
+              }
+            }
+          }
+        },
+
+        {
+          dayName:{en:"Day 5", pap:"Dia 5"},
+          meals:{
+            breakfast:{
+              title:{en:"Chia Pudding (Unsweetened)", pap:"Pudin di chia (sin sukèr)"},
+              tags:["chia","fiber","easy"],
+              ingredients:{
+                en:["Chia seeds","Unsweetened milk (almond/coconut)","Cinnamon","A few nuts"],
+                pap:["Semia di chia","Lechi sin sukèr (almond/coconut)","Kanela","Poko nuts"]
+              },
+              steps:{
+                en:["Mix chia + milk + cinnamon.","Let sit (overnight or 20 min).","Top with nuts."],
+                pap:["Miks chia + lechi + kanela.","Laga sinta (anochi òf 20 min).","Pone nuts riba."]
+              }
+            },
+            lunch:{
+              title:{en:"Egg Salad Lettuce Boats", pap:"Egg salad den lettuce boats"},
+              tags:["eggs","no-bread","quick"],
+              ingredients:{
+                en:["Boiled eggs","Mayonnaise or olive oil","Mustard (optional)","Oregano/pepper","Lettuce"],
+                pap:["Wowo hervi","Mayonesa òf azeite","Mustard (opsional)","Oregano/pimentu","Lettuce"]
+              },
+              steps:{
+                en:["Mash eggs + seasoning.","Scoop into lettuce leaves."],
+                pap:["Machika wowo + sason.","Pone den blachi di lettuce."]
+              }
+            },
+            dinner:{
+              title:{en:"Chicken + Pumpkin (Small portion)", pap:"Galina + pampuna (porshon chikí)"},
+              tags:["chicken","balanced","local"],
+              ingredients:{
+                en:["Chicken","Pumpkin (small portion)","Oregano","Garlic","Olive oil"],
+                pap:["Galina","Pampuna (porshon chikí)","Oregano","Ajo","Azeite"]
+              },
+              steps:{
+                en:["Roast or sauté pumpkin (keep portion small).","Cook chicken with oregano.","Serve together."],
+                pap:["Roast òf sotea pampuna (porshon chikí).","Kushina galina ku oregano.","Sirbi huntu."]
+              }
+            }
+          }
+        },
+
+        {
+          dayName:{en:"Day 6", pap:"Dia 6"},
+          meals:{
+            breakfast:{
+              title:{en:"Moringa Tea + Eggs", pap:"Tè di moringa + wowo"},
+              tags:["moringa","eggs","calm"],
+              ingredients:{
+                en:["Moringa tea (optional)","2 eggs","Tomato/cucumber","Salt/pepper"],
+                pap:["Tè di moringa (opsional)","2 wowo","Tomaat/komkommer","Sal/pimentu"]
+              },
+              steps:{
+                en:["Prepare tea (optional).","Cook eggs.","Serve with fresh veggies."],
+                pap:["Hasi tè (opsional).","Kushina wowo.","Sirbi ku verdura fresku."]
+              }
+            },
+            lunch:{
+              title:{en:"Fish Lettuce Bowl (Oregano)", pap:"Bòl di lettuce ku piska (Oregano)"},
+              tags:["fish","fresh","easy"],
+              ingredients:{
+                en:["Fish","Lettuce","Cucumber/tomato","Oregano","Lime","Olive oil"],
+                pap:["Piska","Lettuce","Komkommer/tomaat","Oregano","Limón","Azeite"]
+              },
+              steps:{
+                en:["Cook fish.","Assemble bowl.","Season with lime/oregano."],
+                pap:["Kushina piska.","Hunga bòl.","Sasona ku limón/oregano."]
+              }
+            },
+            dinner:{
+              title:{en:"Light Soup Night (Veg + Chicken)", pap:"Nochi di sopi leu (verdura + galina)"},
+              tags:["hydration","light","sleep"],
+              ingredients:{
+                en:["Chicken broth","Chicken pieces (optional)","Greens","Oregano","Salt/pepper"],
+                pap:["Bouyon di galina","Piesanan di galina (opsional)","Greens","Oregano","Sal/pimentu"]
+              },
+              steps:{
+                en:["Warm broth.","Add greens + oregano.","Keep dinner light."],
+                pap:["Kende bouyon.","Añadi greens + oregano.","Mantené cena leu."]
+              }
+            }
+          }
+        },
+
+        {
+          dayName:{en:"Day 7", pap:"Dia 7"},
+          meals:{
+            breakfast:{
+              title:{en:"Omelet + Herbs (Oregano)", pap:"Omelet + yerba (Oregano)"},
+              tags:["eggs","herbs","simple"],
+              ingredients:{
+                en:["2–3 eggs","Oregano","Spinach (optional)","Olive oil","Salt/pepper"],
+                pap:["2–3 wowo","Oregano","Spinach (opsional)","Azeite","Sal/pimentu"]
+              },
+              steps:{
+                en:["Cook omelet with oregano.","Add spinach if desired."],
+                pap:["Kushina omelet ku oregano.","Añadi spinach si bo ke."]
+              }
+            },
+            lunch:{
+              title:{en:"Chicken Salad (Avocado-Lime)", pap:"Salat di galina (Avocado-Limón)"},
+              tags:["chicken","avocado","fresh"],
+              ingredients:{
+                en:["Chicken","Lettuce/tomato/cucumber","Avocado","Lime","Olive oil","Salt/pepper"],
+                pap:["Galina","Lettuce/tomaat/komkommer","Avocado","Limón","Azeite","Sal/pimentu"]
+              },
+              steps:{
+                en:["Cook chicken.","Mix salad + avocado.","Season with lime."],
+                pap:["Kushina galina.","Miks salat + avocado.","Sasona ku limón."]
+              }
+            },
+            dinner:{
+              title:{en:"Fish + Greens (Early dinner)", pap:"Piska + greens (cena trempan)"},
+              tags:["fish","greens","recovery"],
+              ingredients:{
+                en:["Fish","Greens","Garlic (optional)","Oregano","Olive oil"],
+                pap:["Piska","Greens","Ajo (opsional)","Oregano","Azeite"]
+              },
+              steps:{
+                en:["Cook fish.","Sauté greens lightly.","Eat early and hydrate."],
+                pap:["Kushina piska.","Sotea greens leu.","Kome trempan i bebe awa."]
+              }
+            }
+          }
+        }
+      ]
+    }
+  };
+  // ============================================================
+
+  // ----------------- Storage keys -----------------
+  const K = {
+    deviceId: "banbaha_device_id_v1",
+    activated: "banbaha_activated_v1",
+    licenseKey: "banbaha_license_key_v1",
+    lang: "banbaha_lang_v1",
+    lastMoveDay: "banbaha_last_move_day",
+  };
+
+  // ----------------- DOM helpers -----------------
+  const $ = (id) => document.getElementById(id);
+  const escapeHtml = (s) => String(s ?? "")
+    .replaceAll("&","&amp;").replaceAll("<","&lt;").replaceAll(">","&gt;")
+    .replaceAll('"',"&quot;").replaceAll("'","&#039;");
+
+  // ----------------- Device ID (privacy-friendly random) -----------------
+  function getDeviceId() {
+    let id = localStorage.getItem(K.deviceId);
+    if (!id) {
+      id = "DEV-" + crypto.getRandomValues(new Uint32Array(4)).join("-");
+      localStorage.setItem(K.deviceId, id);
+    }
+    return id;
+  }
+  function resetDeviceId() {
+    localStorage.removeItem(K.deviceId);
+    localStorage.removeItem(K.activated);
+    localStorage.removeItem(K.licenseKey);
+    return getDeviceId();
+  }
+
+  // ----------------- Language -----------------
+  function getLang() {
+    const saved = localStorage.getItem(K.lang);
+    const ok = CONFIG.languages.some(x => x.code === saved);
+    return ok ? saved : CONFIG.defaultLang;
+  }
+  function setLang(code) {
+    localStorage.setItem(K.lang, code);
+  }
+  function t(obj, lang) {
+    if (!obj) return "";
+    return obj[lang] ?? obj.en ?? "";
+  }
+
+  // ----------------- Activation API -----------------
+  async function apiPost(payload) {
+    if (!CONFIG.API_URL || CONFIG.API_URL.includes("PASTE_")) {
+      throw new Error("Missing API_URL in CONFIG. Paste your Apps Script Web App URL.");
+    }
+    const res = await fetch(CONFIG.API_URL, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(payload),
+    });
+    return res.json();
+  }
+
+  async function activateLicense(licenseKey) {
+    const deviceId = getDeviceId();
+    return apiPost({ action: "activate", license_key: licenseKey, device_id: deviceId });
+  }
+
+  async function checkLicense(licenseKey) {
+    const deviceId = getDeviceId();
+    return apiPost({ action: "check", license_key: licenseKey, device_id: deviceId });
+  }
+
+  function isActivated() {
+    return localStorage.getItem(K.activated) === "true" && !!localStorage.getItem(K.licenseKey);
+  }
+
+  function setActivated(licenseKey) {
+    localStorage.setItem(K.licenseKey, licenseKey);
+    localStorage.setItem(K.activated, "true");
+  }
+
+  // ----------------- UI state -----------------
+  let lang = getLang();
+  let timer = { total: 0, left: 0, interval: null, running: false };
+
+  function showMsg(el, text, type) {
+    el.className = "msg show" + (type ? (" " + type) : "");
+    el.textContent = text;
+    clearTimeout(showMsg._t);
+    showMsg._t = setTimeout(() => { el.className = "msg"; }, 2400);
+  }
+
+  function setPillStatus(text) {
+    $("statusPill").textContent = "Status: " + text;
+  }
+
+  function switchTab(which) {
+    $("tabMove").classList.toggle("active", which === "move");
+    $("tabEat").classList.toggle("active", which === "eat");
+    $("tabAbout").classList.toggle("active", which === "about");
+    $("panelMove").classList.toggle("show", which === "move");
+    $("panelEat").classList.toggle("show", which === "eat");
+    $("panelAbout").classList.toggle("show", which === "about");
+  }
+
+  // ----------------- Build selectors -----------------
+  function buildLangSelector() {
+    const sel = $("langSel");
+    sel.innerHTML = "";
+    CONFIG.languages.forEach(x => {
+      const opt = document.createElement("option");
+      opt.value = x.code;
+      opt.textContent = x.label;
+      sel.appendChild(opt);
+    });
+    sel.value = lang;
+  }
+
+  function buildDaySelectors() {
+    const moveSel = $("daySelMove");
+    const eatSel = $("daySelEat");
+    moveSel.innerHTML = "";
+    eatSel.innerHTML = "";
+    CONFIG.move.days.forEach((d, idx) => {
+      const label = `${idx+1}. ${t(d.title, lang)}`;
+      const opt1 = document.createElement("option");
+      opt1.value = String(idx);
+      opt1.textContent = label;
+      moveSel.appendChild(opt1);
+
+      const opt2 = document.createElement("option");
+      opt2.value = String(idx);
+      opt2.textContent = `${idx+1}. ${t(CONFIG.eat.days[idx].dayName, lang)}`;
+      eatSel.appendChild(opt2);
+    });
+
+    // default to "today" based on local day-of-week cycle (simple)
+    const todayIndex = (new Date().getDay() + 6) % 7; // Mon=0...Sun=6
+    moveSel.value = String(todayIndex);
+    eatSel.value = String(todayIndex);
+  }
+
+  // ----------------- Move rendering -----------------
+  function formatTime(sec) {
+    const m = Math.floor(sec / 60);
+    const s = sec % 60;
+    return String(m).padStart(2, "0") + ":" + String(s).padStart(2, "0");
+  }
+
+  function applyTempoPill() {
+    const mode = $("tempoSel").value;
+    $("tempoPill").textContent = mode === "flow" ? "Tempo: 66–72 BPM (Flow)" : "Tempo: 80 BPM (short bursts)";
+  }
+
+  function renderMove() {
+    const idx = Number($("daySelMove").value || 0);
+    const d = CONFIG.move.days[idx];
+    $("routineMeta").textContent = t(d.meta, lang);
+    $("routineTitle").textContent = t(d.title, lang);
+
+    const steps = d.steps[lang] || d.steps.en || [];
+    $("routineSteps").innerHTML = steps.map(x => `<li>${escapeHtml(x)}</li>`).join("");
+
+    // timer
+    timer.total = Math.round((d.minutes || 5) * 60);
+    timer.left = timer.total;
+    $("timerText").textContent = formatTime(timer.left);
+    $("pauseBtn").disabled = true;
+    $("startBtn").disabled = false;
+    timer.running = false;
+
+    applyTempoPill();
+  }
+
+  function startTimer() {
+    if (timer.running) return;
+    timer.running = true;
+    $("startBtn").disabled = true;
+    $("pauseBtn").disabled = false;
+
+    timer.interval = setInterval(() => {
+      timer.left = Math.max(0, timer.left - 1);
+      $("timerText").textContent = formatTime(timer.left);
+      if (timer.left <= 0) {
+        stopTimer();
+        showMsg($("moveMsg"), (lang === "pap" ? "Kabamentu! Bon trabou ✅" : "Finished! Well done ✅"), "ok");
+      }
+    }, 1000);
+  }
+
+  function pauseTimer() {
+    if (!timer.running) return;
+    timer.running = false;
+    $("startBtn").disabled = false;
+    $("pauseBtn").disabled = true;
+    clearInterval(timer.interval);
+    timer.interval = null;
+  }
+
+  function stopTimer() {
+    timer.running = false;
+    clearInterval(timer.interval);
+    timer.interval = null;
+    $("pauseBtn").disabled = true;
+    $("startBtn").disabled = false;
+  }
+
+  function resetTimer() {
+    stopTimer();
+    timer.left = timer.total;
+    $("timerText").textContent = formatTime(timer.left);
+  }
+
+  function buildWhatsAppUrl(text) {
+    const msg = text || "";
+    if (CONFIG.whatsappSupportNumber && CONFIG.whatsappSupportNumber.trim()) {
+      return `https://wa.me/${CONFIG.whatsappSupportNumber.trim()}?text=${encodeURIComponent(msg)}`;
+    }
+    return `https://wa.me/?text=${encodeURIComponent(msg)}`;
+  }
+
+  function shareTodayMove() {
+    const idx = Number($("daySelMove").value || 0);
+    const d = CONFIG.move.days[idx];
+    const tempoMode = $("tempoSel").value;
+    const tempoText = tempoMode === "flow" ? "66–72 BPM" : "80 BPM bursts";
+
+    const title = t(d.title, lang);
+    const steps = (d.steps[lang] || d.steps.en || []).slice(0, 5).map((s,i)=>`${i+1}) ${s}`).join("\n");
+
+    const msg =
+      `${CONFIG.appName} — ${title}\n` +
+      `Tempo: ${tempoText}\n` +
+      `Time: ${d.minutes} min\n\n` +
+      `${steps}\n\n` +
+      (lang === "pap"
+        ? "Tip: hala 4 beat, saka 4 beat. 2 beat = 1 kambio di peso."
+        : "Tip: inhale 4 beats, exhale 4 beats. 2 beats = 1 weight shift.");
+
+    window.open(buildWhatsAppUrl(msg), "_blank");
+  }
+
+  // ----------------- Eat rendering -----------------
+  function renderMeal() {
+    const dayIdx = Number($("daySelEat").value || 0);
+    const mealKey = $("mealSel").value || "breakfast";
+
+    const day = CONFIG.eat.days[dayIdx];
+    const meal = day.meals[mealKey];
+
+    $("mealMeta").textContent = `${t(day.dayName, lang)} • ${mealKey}`;
+    $("mealTitle").textContent = t(meal.title, lang);
+
+    // tags
+    $("mealTags").innerHTML = (meal.tags || []).slice(0, 8).map(x => `<span class="tag">${escapeHtml(x)}</span>`).join("");
+
+    // ingredients
+    const ing = (meal.ingredients && (meal.ingredients[lang] || meal.ingredients.en)) || [];
+    $("mealIngredients").innerHTML = ing.map(x => `<li>${escapeHtml(x)}</li>`).join("");
+
+    // steps
+    const st = (meal.steps && (meal.steps[lang] || meal.steps.en)) || [];
+    $("mealSteps").innerHTML = st.map(x => `<li>${escapeHtml(x)}</li>`).join("");
+  }
+
+  function shareMeal() {
+    const dayIdx = Number($("daySelEat").value || 0);
+    const mealKey = $("mealSel").value || "breakfast";
+    const day = CONFIG.eat.days[dayIdx];
+    const meal = day.meals[mealKey];
+
+    const title = t(meal.title, lang);
+    const ing = (meal.ingredients && (meal.ingredients[lang] || meal.ingredients.en)) || [];
+    const st = (meal.steps && (meal.steps[lang] || meal.steps.en)) || [];
+
+    const msg =
+      `${CONFIG.appName} — ${t(day.dayName, lang)} (${mealKey})\n` +
+      `${title}\n\n` +
+      (lang === "pap" ? "Ingrediente:\n" : "Ingredients:\n") +
+      ing.map(x => `• ${x}`).join("\n") +
+      "\n\n" +
+      (lang === "pap" ? "Pasunan:\n" : "Steps:\n") +
+      st.map((x,i)=>`${i+1}) ${x}`).join("\n");
+
+    window.open(buildWhatsAppUrl(msg), "_blank");
+  }
+
+  // ----------------- Activation UI -----------------
+  async function refreshActivationStatus() {
+    const msgEl = $("actMsg");
+    const license = localStorage.getItem(K.licenseKey) || $("licenseInput").value.trim();
+
+    if (!license) {
+      showMsg(msgEl, (lang==="pap" ? "Pone bo license key promé." : "Enter your license key first."), "warn");
+      return;
+    }
+
+    try {
+      const out = await checkLicense(license);
+      if (out.ok) {
+        setActivated(license);
+        bootApp();
+      } else {
+        showMsg(msgEl, out.error || "Not active.", "bad");
+        setPillStatus("NOT ACTIVE");
+      }
+    } catch (e) {
+      showMsg(msgEl, (lang==="pap" ? "No por konektá. Mester internet pa chekea." : "Cannot connect. Internet required to check."), "warn");
+      setPillStatus("OFFLINE");
+    }
+  }
+
+  async function doActivate() {
+    const msgEl = $("actMsg");
+    const license = $("licenseInput").value.trim();
+
+    if (!license) {
+      showMsg(msgEl, (lang==="pap" ? "Pone bo license key." : "Enter your license key."), "warn");
+      return;
+    }
+
+    showMsg(msgEl, (lang==="pap" ? "Aktivando…" : "Activating…"), "warn");
+    setPillStatus("ACTIVATING");
+
+    try {
+      const out = await activateLicense(license);
+      if (out.ok) {
+        setActivated(license);
+        showMsg(msgEl, (lang==="pap" ? "Aktivá ✅" : "Activated ✅"), "ok");
+        bootApp();
+      } else {
+        showMsg(msgEl, out.error || "Activation failed.", "bad");
+        setPillStatus("DENIED");
+      }
+    } catch (e) {
+      showMsg(msgEl, (lang==="pap" ? "No por aktivá. Kontrolá internet i API_URL." : "Cannot activate. Check internet and API_URL."), "bad");
+      setPillStatus("ERROR");
+    }
+  }
+
+  // ----------------- Boot main app -----------------
+  function bootApp() {
+    // Titles
+    $("appTitle").textContent = CONFIG.appName;
+    $("appSubtitle").textContent = CONFIG.subtitle;
+
+    // Hide activation panel, show tabs
+    $("panelActivate").classList.remove("show");
+    $("tabs").style.display = "flex";
+    $("panelMove").classList.add("show");
+    switchTab("move");
+
+    setPillStatus("ACTIVE");
+
+    // Build selectors and render
+    buildLangSelector();
+    buildDaySelectors();
+    renderMove();
+    renderMeal();
+  }
+
+  function bootActivationOnly() {
+    $("appTitle").textContent = CONFIG.appName;
+    $("appSubtitle").textContent = CONFIG.subtitle;
+
+    $("tabs").style.display = "none";
+    $("panelActivate").classList.add("show");
+    $("panelMove").classList.remove("show");
+    $("panelEat").classList.remove("show");
+    $("panelAbout").classList.remove("show");
+
+    setPillStatus("NOT ACTIVE");
+  }
+
+  // ----------------- Events -----------------
+  $("tabMove").addEventListener("click", () => switchTab("move"));
+  $("tabEat").addEventListener("click", () => switchTab("eat"));
+  $("tabAbout").addEventListener("click", () => switchTab("about"));
+
+  $("langSel").addEventListener("change", () => {
+    lang = $("langSel").value;
+    setLang(lang);
+    buildDaySelectors();
+    renderMove();
+    renderMeal();
+
+    // Update activation message language too
+    $("actTitle").textContent = (lang==="pap" ? "Aktivá BanBaha2026" : "Activate BanBaha2026");
+    $("actText").textContent = (lang==="pap"
+      ? "Aktivashon ta nesesario (un biaha online). Despues di aktivashon, kontenido por usa offline."
+      : "Activation is required (one-time online). After activation, the content can be used offline.");
+    $("licenseLbl").textContent = (lang==="pap" ? "License key" : "License key");
+    $("deviceLbl").textContent = (lang==="pap" ? "Device ID" : "Device ID");
+  });
+
+  $("daySelMove").addEventListener("change", renderMove);
+  $("tempoSel").addEventListener("change", () => { applyTempoPill(); });
+  $("startBtn").addEventListener("click", startTimer);
+  $("pauseBtn").addEventListener("click", pauseTimer);
+  $("resetBtn").addEventListener("click", resetTimer);
+  $("shareTodayBtn").addEventListener("click", shareTodayMove);
+
+  $("daySelEat").addEventListener("change", renderMeal);
+  $("mealSel").addEventListener("change", renderMeal);
+  $("shareMealBtn").addEventListener("click", shareMeal);
+
+  // Activation actions
+  $("activateBtn").addEventListener("click", doActivate);
+  $("retryBtn").addEventListener("click", refreshActivationStatus);
+
+  $("copyDeviceBtn").addEventListener("click", async () => {
+    try{
+      await navigator.clipboard.writeText(getDeviceId());
+      showMsg($("actMsg"), (lang==="pap" ? "Kopiá ✅" : "Copied ✅"), "ok");
+    } catch {
+      showMsg($("actMsg"), (lang==="pap" ? "No por kopiá. Kopia manual." : "Cannot copy. Copy manually."), "warn");
+    }
+  });
+
+  $("resetDeviceBtn").addEventListener("click", () => {
+    const ok = confirm(lang==="pap"
+      ? "Reset Device ID? Esaki lo keda desaktivá i mester un nobo aktivashon."
+      : "Reset Device ID? This will deactivate and require a new activation.");
+    if(!ok) return;
+    const id = resetDeviceId();
+    $("deviceIdBox").textContent = id;
+    bootActivationOnly();
+    showMsg($("actMsg"), (lang==="pap" ? "Device ID reset. Pone license key i aktivá atrobe." : "Device ID reset. Enter license key and activate again."), "warn");
+  });
+
+  // ----------------- Init -----------------
+  $("deviceIdBox").textContent = getDeviceId();
+
+  // Localize activation texts initially
+  $("actTitle").textContent = (lang==="pap" ? "Aktivá BanBaha2026" : "Activate BanBaha2026");
+  $("actText").textContent = (lang==="pap"
+    ? "Aktivashon ta nesesario (un biaha online). Despues di aktivashon, kontenido por usa offline."
+    : "Activation is required (one-time online). After activation, the content can be used offline.");
+
+  // If already activated, boot main app
+  if (isActivated()) {
+    setPillStatus("ACTIVE");
+    bootApp();
+  } else {
+    bootActivationOnly();
+  }
+
+})();
+</script>
+</body>
+</html>
