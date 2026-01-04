@@ -1226,12 +1226,10 @@
     : "Activation is required (one-time online). After activation, the content can be used offline.");
 
   // If already activated, boot main app
-  if (isActivated()) {
-    setPillStatus("ACTIVE");
-    bootApp();
-  } else {
-    bootActivationOnly();
-  }
+  // TEMP BYPASS (no activation)
+setPillStatus("BYPASS MODE");
+bootApp();
+
 
 })();
 </script>
