@@ -1189,7 +1189,11 @@
   $("shareMealBtn").addEventListener("click", shareMeal);
 
   // Activation actions
-  $("activateBtn").addEventListener("click", doActivate);
+  $("activateBtn").addEventListener("click", () => {
+  alert("Activate click detected ✅");
+  doActivate();
+});
+
   $("retryBtn").addEventListener("click", refreshActivationStatus);
 
   $("copyDeviceBtn").addEventListener("click", async () => {
